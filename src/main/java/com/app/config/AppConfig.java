@@ -13,6 +13,7 @@ import org.springframework.format.FormatterRegistry;
 import org.springframework.orm.hibernate5.HibernateTemplate;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
@@ -27,6 +28,7 @@ import com.app.model.OrderModel;
 import com.app.model.PurchaseOrder;
 import com.app.model.ShipmentType;
 import com.app.model.Uom;
+import com.app.model.User;
 import com.app.model.Vendor;
 import com.app.model.WhUserType;
 import com.app.validator.CustomerValidator;
@@ -62,7 +64,7 @@ public class AppConfig implements WebMvcConfigurer {
 	// load properties into AppConfig
 	@Autowired
 	private Environment env;
-	
+
 	@Autowired
 	private UserIdToObjectConverter userIdConverter;
 
@@ -92,7 +94,8 @@ public class AppConfig implements WebMvcConfigurer {
 				OrderModelPdfView.class, ShipmentType.class, ShipmentTypeExcelView.class, ShipmentTypePdfView.class,
 				Document.class, Item.class, ItemExcelView.class, ItemPdfView.class, UserIdToObjectConverter.class,
 				UomValidator.class, CustomerValidator.class, WhUserTypeValidator.class, ShipmentTypeValidator.class,
-				OrderModelValidator.class, VendorValidator.class,ItemValidator.class,PurchaseOrder.class,PurchaseOrderValidator.class);
+				OrderModelValidator.class, VendorValidator.class, ItemValidator.class, PurchaseOrder.class,
+				PurchaseOrderValidator.class, User.class);
 
 		sf.setHibernateProperties(props());
 		return sf;
@@ -143,5 +146,11 @@ public class AppConfig implements WebMvcConfigurer {
 	@Override
 	public void addFormatters(FormatterRegistry registry) {
 		registry.addConverter(userIdConverter);
+	}
+
+	// 7. Password Encoder
+	@Bean
+	public BCryptPasswordEncoder encoder() {
+		return new BCryptPasswordEncoder();
 	}
 }
