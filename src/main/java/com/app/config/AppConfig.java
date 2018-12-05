@@ -17,6 +17,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 import org.springframework.web.multipart.commons.CommonsMultipartResolver;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
@@ -139,8 +140,17 @@ public class AppConfig implements WebMvcConfigurer {
 	// 6.Multipart Resolver
 	@Bean
 	public CommonsMultipartResolver multipartResolver() {
+		CommonsMultipartResolver r=new CommonsMultipartResolver();
+		r.setMaxUploadSize(20971520);
+		r.setMaxInMemorySize(20971520);
+		//20x1024x1024 = 20 MB
+		return r;
+	}
 
-		return new CommonsMultipartResolver();
+	// 7. Password Encoder
+	@Bean
+	public BCryptPasswordEncoder encoder() {
+		return new BCryptPasswordEncoder();
 	}
 
 	@Override
@@ -148,9 +158,8 @@ public class AppConfig implements WebMvcConfigurer {
 		registry.addConverter(userIdConverter);
 	}
 
-	// 7. Password Encoder
-	@Bean
-	public BCryptPasswordEncoder encoder() {
-		return new BCryptPasswordEncoder();
+	@Override
+	public void addResourceHandlers(ResourceHandlerRegistry registry) {
+		registry.addResourceHandler("/resources/**").addResourceLocations("/resources/");
 	}
 }
